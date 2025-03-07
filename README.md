@@ -17,13 +17,8 @@ If you want to modify or build the program yourself:
    ```
    pip install -r requirements.txt
    pip install pyinstaller
-   pip install Pillow
    ```
-3. Generate the icon:
-   ```
-   python create_icon.py
-   ```
-4. Build the executable:
+3. Build the executable:
    ```
    pyinstaller --onefile --noconsole --icon=file_blocker.ico file_blocker.py
    ```
