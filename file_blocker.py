@@ -13,9 +13,13 @@ class FileBlocker:
         self.syslog_server = "localhost"  # Verander dit naar uw syslog server
         self.syslog_port = 514  # Standaard syslog poort
         
+        # Maak een map voor de logs in ProgramData
+        self.log_dir = os.path.join(os.environ.get('PROGRAMDATA', 'C:\\ProgramData'), 'FileBlocker')
+        os.makedirs(self.log_dir, exist_ok=True)
+        
         # Configureer logging
         logging.basicConfig(
-            filename='file_blocker.log',
+            filename=os.path.join(self.log_dir, 'file_blocker.log'),
             level=logging.WARNING,
             format='%(asctime)s - %(levelname)s - %(message)s'
         )

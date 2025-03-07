@@ -17,21 +17,25 @@ If you want to modify or build the program yourself:
    ```
    pip install -r requirements.txt
    pip install pyinstaller
+   pip install Pillow
    ```
-3. Build the executable:
+3. Generate the icon:
    ```
-   pyinstaller --onefile --noconsole --icon=NONE file_blocker.py
+   python create_icon.py
+   ```
+4. Build the executable:
+   ```
+   pyinstaller --onefile --noconsole --icon=file_blocker.ico file_blocker.py
    ```
 
    The PyInstaller options used:
    - `--onefile`: Creates a single executable file
    - `--noconsole`: Prevents a console window from appearing
-   - `--icon=NONE`: Uses default icon (you can specify a custom .ico file)
+   - `--icon=file_blocker.ico`: Uses the custom icon
 
    After building:
    - The executable will be created in the `dist` folder
    - You can safely delete the `build` folder and `.spec` file
-   - Copy `run_blocker.bat` to the same folder as the executable
 
 ### Associating .js files
 
@@ -43,13 +47,13 @@ To associate .js files with the program:
 4. Check "Always use this app to open .js files"
 5. Click "More apps" or "Look for another app"
 6. Click "Browse" to locate an app on your PC
-7. Navigate to the location of `run_blocker.bat` where you installed the program
-8. Select `run_blocker.bat`
+7. Navigate to the location of `file_blocker.exe` where you installed the program
+8. Select `file_blocker.exe`
 9. Click "Open"
 
 ## Configuration
 
-The program saves all blocked files in a local log file named `file_blocker.log`. This file is created in the same directory as the program.
+The program saves all blocked files in a log file named `file_blocker.log`. This file is created in `C:\ProgramData\FileBlocker\`. The program will automatically create this directory if it doesn't exist.
 
 ## Features
 
@@ -59,7 +63,7 @@ The program saves all blocked files in a local log file named `file_blocker.log`
   - SHA1 hash of the file
   - IP address of the computer
   - Time of blocking
-- Stores all information in a local log file
+- Stores all information in a central log file
 - Closes automatically after closing the warning window
 - Warning window cannot be minimized or maximized
 - Warning window stays on top of other windows
@@ -67,7 +71,7 @@ The program saves all blocked files in a local log file named `file_blocker.log`
 
 ## Log File
 
-All blocked files are logged in `file_blocker.log` with the following information:
+All blocked files are logged in `C:\ProgramData\FileBlocker\file_blocker.log` with the following information:
 - Time of blocking
 - Filename
 - SHA1 hash of the file
@@ -77,7 +81,7 @@ All blocked files are logged in `file_blocker.log` with the following informatio
 
 To test the program, you can use the following command:
 ```
-run_blocker.bat "path\to\test.js"
+file_blocker.exe "path\to\test.js"
 ```
 
 ## Removing File Association
@@ -96,6 +100,5 @@ To distribute the application:
 1. Build the executable using PyInstaller as described above
 2. Create a ZIP file containing:
    - The executable (`file_blocker.exe`) from the `dist` folder
-   - The batch file (`run_blocker.bat`)
    - This README.md file
 3. Users only need to extract the ZIP and follow the installation instructions 
