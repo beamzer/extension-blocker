@@ -50,6 +50,27 @@ To associate .js files with the program:
 
 The program saves all blocked files in a log file named `file_blocker.log`. This file is created in `C:\ProgramData\FileBlocker\`. The program will automatically create this directory if it doesn't exist.
 
+## Command Line Options
+
+The program supports the following command line options:
+
+- `file`: The file to block (required when not using --register)
+- `--syslog HOSTNAME`: Enable syslog and specify the syslog server hostname
+- `--port PORT`: Specify the syslog server port (default: 514)
+- `--register`: Register file association
+
+Examples:
+```
+# Block a file with syslog enabled
+file_blocker.exe "test.js" --syslog syslog.example.com
+
+# Block a file with custom syslog port
+file_blocker.exe "test.js" --syslog syslog.example.com --port 1514
+
+# Register file association
+file_blocker.exe --register
+```
+
 ## Features
 
 - Blocks opening of .js files
@@ -59,6 +80,7 @@ The program saves all blocked files in a log file named `file_blocker.log`. This
   - IP address of the computer
   - Time of blocking
 - Stores all information in a central log file
+- Optional syslog server support
 - Closes automatically after closing the warning window
 - Warning window cannot be minimized or maximized
 - Warning window stays on top of other windows
@@ -72,11 +94,18 @@ All blocked files are logged in `C:\ProgramData\FileBlocker\file_blocker.log` wi
 - SHA1 hash of the file
 - IP address of the computer
 
+If syslog is enabled, the same information is also sent to the configured syslog server.
+
 ## Testing
 
 To test the program, you can use the following command:
 ```
 file_blocker.exe "path\to\test.js"
+```
+
+Or with syslog enabled:
+```
+file_blocker.exe "path\to\test.js" --syslog syslog.example.com
 ```
 
 ## Removing File Association

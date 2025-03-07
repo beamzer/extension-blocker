@@ -6,12 +6,13 @@ import socket
 import sys
 import os
 import logging
+import argparse
 from datetime import datetime
 
 class FileBlocker:
-    def __init__(self):
-        self.syslog_server = "localhost"  # Verander dit naar uw syslog server
-        self.syslog_port = 514  # Standaard syslog poort
+    def __init__(self, syslog_host=None, syslog_port=514):
+        self.syslog_host = syslog_host
+        self.syslog_port = syslog_port
         
         # Maak een map voor de logs in ProgramData
         self.log_dir = os.path.join(os.environ.get('PROGRAMDATA', 'C:\\ProgramData'), 'FileBlocker')
@@ -36,9 +37,17 @@ class FileBlocker:
         return filename, file_hash, ip_address
 
     def send_to_syslog(self, message):
-        """Stuur bericht naar log bestand"""
+        """Stuur bericht naar log bestand en optioneel naar syslog server"""
         try:
+            # Log naar lokaal bestand
             logging.warning(message)
+            
+            # Als syslog server is geconfigureerd, stuur ook daar naartoe
+            if self.syslog_host:
+                import socket
+                sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                sock.sendto(message.encode('utf-8'), (self.syslog_host, self.syslog_port))
+                sock.close()
         except Exception as e:
             print(f"Fout bij loggen: {e}")
 
@@ -102,15 +111,23 @@ def register_file_association():
         return False
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1]:
+    parser = argparse.ArgumentParser(description='File Blocker - Block potentially dangerous files')
+    parser.add_argument('file', nargs='?', help='The file to block')
+    parser.add_argument('--syslog', help='Enable syslog and specify the syslog server hostname')
+    parser.add_argument('--port', type=int, default=514, help='Syslog server port (default: 514)')
+    parser.add_argument('--register', action='store_true', help='Register file association')
+    
+    args = parser.parse_args()
+    
+    if args.file:
         # Als er een bestand is meegegeven, toon de waarschuwing
-        blocker = FileBlocker()
-        blocker.show_warning(sys.argv[1])
-    elif "--register" in sys.argv:
+        blocker = FileBlocker(syslog_host=args.syslog, syslog_port=args.port)
+        blocker.show_warning(args.file)
+    elif args.register:
         # Alleen registreren als --register argument is meegegeven
         if register_file_association():
             print("Bestandsassociatie succesvol geregistreerd!")
         else:
             print("Fout bij registreren bestandsassociatie.")
     else:
-        print("Gebruik: python file_blocker.py [bestand] of python file_blocker.py --register") 
+        parser.print_help() 
