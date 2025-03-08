@@ -1,6 +1,6 @@
 # File Blocker
 
-This Windows application blocks the opening of potentially dangerous file extensions (like .js) and displays a warning window instead. The program collects information about the blocked file and stores it in a local log file.
+This Windows application blocks the opening of potentially dangerous file extensions (like .js) and displays a warning window instead. The program collects information about the blocked file, stores it in a local log file and optionally sends this information to a syslog server. At the moment the syslog server is passed as a commandline argument to make it easy to test this functionality. If you want use this in a production setting, it's best to configure the syslog information in the python script, because association of extensions to a program with a commandline argument is more complex.
 
 ## Installation
 
